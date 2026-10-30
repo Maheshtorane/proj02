@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hold My Hand</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&display=swap">
+<style>
+:root{--sky1:#bfe6ff;--sky2:#d9c8ff;--tx:#3b2a6b;--accent:#7c4dff;--panel:#ffffffcc;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sky1:#18244d;--sky2:#3b2a74;--tx:#fff;--panel:#ffffff22}}
+:root[data-theme="dark"]{--sky1:#18244d;--sky2:#3b2a74;--tx:#fff;--panel:#ffffff22}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:'Baloo 2',system-ui,sans-serif;background:linear-gradient(var(--sky1),var(--sky2));color:var(--tx);display:flex;justify-content:center;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#dawn{position:fixed;inset:0;background:radial-gradient(circle at 50% 40%,#ff9fcfaa,transparent 62%);opacity:0;pointer-events:none}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:30}
+#flash.on{animation:flash 1s ease-out}
+@keyframes flash{0%{opacity:.95}100%{opacity:0}}
+#app{width:100%;max-width:520px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 18px;text-align:center;position:relative;z-index:1}
+h1{margin:0;font-size:2rem;font-weight:700}
+.sub{margin:2px 0 6px;font-size:1.05rem;opacity:.85}
+svg{width:100%;height:auto;max-height:46vh;overflow:visible;transition:transform 1.6s cubic-bezier(.2,.8,.2,1)}
+.lb{font:700 17px 'Baloo 2',system-ui,sans-serif;fill:var(--tx)}
+.ring{fill:none;stroke:#fff;stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center}
+.pop .ring{animation:burst 1.5s ease-out forwards}
+.pop .ring:nth-of-type(2){animation-delay:.3s}
+@keyframes burst{from{transform:scale(1);opacity:1}to{transform:scale(18);opacity:0}}
+.panel{width:100%;background:var(--panel);border-radius:22px;padding:14px 16px;margin-top:6px;min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
+#bar{width:100%;height:12px;border-radius:99px;background:#ffffff66;overflow:hidden}
+#fill{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff8fb8,var(--accent));border-radius:99px}
+small{opacity:.8;font-size:.9rem;margin-top:2px}
+#msg{margin:10px 0 0;font-size:1.25rem;font-weight:700;line-height:1.25}
+#final{display:none}
+#final h2{margin:0 0 6px;font-size:1.6rem;line-height:1.2}
+#final p{margin:4px 0;font-size:1.1rem;line-height:1.35}
+.done #final{display:block;animation:fade 1s ease-out .6s backwards}
+.done #live{display:none}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+.btn{margin-top:10px;background:linear-gradient(90deg,var(--accent),#5bbcf5);color:#fff;border:0;border-radius:99px;padding:8px 26px;font:inherit;font-size:1.05rem;font-weight:700;cursor:pointer}
+.btn:focus-visible{outline:3px solid #ff8fb8;outline-offset:3px}
+.star{position:fixed;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.7;animation:tw 3s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.1}}
+.fh{position:fixed;pointer-events:none;z-index:15;animation-duration:2s;animation-timing-function:ease-out;animation-fill-mode:forwards;line-height:1}
+@keyframes rise{from{transform:translate(0,0) scale(.6);opacity:1}to{transform:translate(var(--dx),-130px) scale(1.2);opacity:0}}
+@keyframes out{from{transform:translate(0,0) scale(.4);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(1.4);opacity:0}}
+.fall{position:fixed;top:-50px;pointer-events:none;z-index:20;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(360deg)}}
+#reach{transition:opacity .25s}
+#cl{opacity:0;transform-box:fill-box;transform-origin:center}
+.done #cl{animation:clasp .9s cubic-bezier(.3,1.5,.5,1) .2s both}
+@keyframes clasp{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+#lvl2{display:none;width:100%;max-width:520px;height:100%}#lvl2.on{display:block}
+#app2{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 18px;text-align:center;position:relative;z-index:1}
+#eyes{width:100%;height:auto;max-height:46vh}
+#bar2{width:100%;height:12px;border-radius:99px;background:#ffffff66;overflow:hidden}
+#fill2{display:block;height:100%;width:0;background:linear-gradient(90deg,#5bbcf5,#ff8fb8);border-radius:99px}
+#msg2{margin:10px 0 0;font-size:1.25rem;font-weight:700;line-height:1.25}
+#final2 h2{margin:0 0 6px;font-size:1.5rem;line-height:1.2}#final2 p{margin:4px 0;font-size:1.1rem;line-height:1.35}
+.btn.w{background:#fff;color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.star{animation:none}}
+</style>
+</head>
+<body>
+<div id="dawn"></div><div id="flash"></div>
+<div id="app">
+  <h1>Hold My Hand 🤝</h1>
+  <p class="sub">Level 1: press and hold anywhere on the screen</p>
+  <svg id="art" viewBox="0 0 400 300" role="img" aria-label="Two hands reaching toward each other">
+    <defs>
+      <radialGradient id="g"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#ffb6d5" stop-opacity=".85"/><stop offset="1" stop-color="#b9a2f0" stop-opacity="0"/></radialGradient>
+      <g id="hs" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-30,-14 L0,-19 Q30,-32 50,-23 L58,20 Q30,33 0,21 L-30,14 Z"/>
+        <path fill="none" d="M52,-14 L112,-18"/>
+        <path fill="none" d="M54,-2 Q88,-3 94,7"/>
+        <path fill="none" d="M54,9 Q80,10 85,18"/>
+        <path fill="none" d="M52,19 Q72,21 75,28"/>
+        <path fill="none" d="M30,-24 Q42,-44 64,-37"/>
+      </g>
+      <g id="hand">
+        <use href="#hs" fill="#c98a63" stroke="#c98a63" stroke-width="17"/>
+        <use href="#hs" fill="#f2c59f" stroke="#f2c59f" stroke-width="13"/>
+        <path d="M70,-30 Q78,-26 84,-31" fill="none" stroke="#c98a63" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
+      </g>
+    </defs>
+    <circle id="glow" cx="200" cy="150" r="0" fill="url(#g)" opacity="0"/>
+    <g id="reach"><g id="L"><use href="#hand"/><ellipse cx="109" cy="-18" rx="5.5" ry="3.8" fill="#ffe3ee"/>
+      <rect x="-172" y="-27" width="142" height="54" rx="16" fill="#5bbcf5"/><rect x="-166" y="-22" width="128" height="9" rx="4.5" fill="#fff" opacity=".28"/><rect x="-42" y="-30" width="12" height="60" rx="6" fill="#3a9ad9"/>
+      <text x="-100" y="8" text-anchor="middle" font-size="20" fill="#fff">★</text></g>
+    <g id="R"><use href="#hand"/><ellipse cx="109" cy="-18" rx="5.5" ry="3.8" fill="#d2b3ff"/>
+      <rect x="-172" y="-27" width="142" height="54" rx="16" fill="#8e6fe0"/><rect x="-166" y="-22" width="128" height="9" rx="4.5" fill="#fff" opacity=".28"/><rect x="-42" y="-30" width="12" height="60" rx="6" fill="#6a4fc0"/>
+      <text x="-100" y="8" text-anchor="middle" font-size="20" fill="#fff">♥</text></g>
+    <g id="sp" fill="#fff" font-size="15" text-anchor="middle" opacity="0"><text x="200" y="136">✦</text><text x="208" y="166">✦</text><text x="192" y="154">✦</text></g></g><g id="cl"><g id="clb"></g></g>
+    <g id="rings"><circle class="ring" cx="200" cy="150" r="10"/><circle class="ring" cx="200" cy="150" r="10"/></g>
+    <text class="lb" x="70" y="250" text-anchor="middle">Mahesh</text>
+    <text class="lb" x="330" y="250" text-anchor="middle">Dhanashri</text>
+  </svg>
+  <div class="panel">
+    <div id="live" style="width:100%">
+      <div id="bar"><i id="fill"></i></div>
+      <small>Distance between us</small>
+      <p id="msg">Hold the screen and I’ll come closer 🥺</p>
+    </div>
+    <div id="final">
+      <h2>Holding your hand, even from far away 🤝</h2>
+      <p>I miss you, Dhanashri. Until I can really sleep on your shoulder and look into your eyes, this is me holding your hand. 💜</p>
+      <p><b>— Mahesh</b></p>
+      <button class="btn" id="next">Next level: Staring Contest 👀</button> <button class="btn w" id="again">Play again ↺</button>
+    </div>
+  </div>
+</div>
+<div id='lvl2'><div id='app2'><h1>Staring Contest 👀</h1><p class='sub'>Level 2: press and hold anywhere and look into my eyes for 10 seconds. Let go and you blinked 😜</p><svg id='eyes' viewBox='0 0 400 240' role='img' aria-label='A pair of cute eyes'></svg><div class='panel'><div id='live2' style='width:100%'><div id='bar2'><i id='fill2'></i></div><small>Eye contact</small><p id='msg2'>Press and hold anywhere, then look into my eyes 👀</p></div><div id='final2' style='display:none'><h2>I lose! 😳 I can’t win against your eyes 💜</h2><p>I just want to see your eyes in person, Dhanashri. Until then, keep looking at me like this.</p><p><b>— Mahesh</b></p><button class='btn' id='again2'>Stare again 👀</button> <button class='btn w' id='home'>From the start ↺</button></div></div></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const reach=$('#reach'),clb=$('#clb'),L=$('#L'),R=$('#R'),glow=$('#glow'),sp=$('#sp'),fill=$('#fill'),msg=$('#msg'),app=$('#app'),art=$('#art'),dawn=$('#dawn');
+let lvl=1,p=0,hold=false,done=false,rel=0,droop=0,acc=0,last=performance.now();
+for(let k=0;k<26;k++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'vw';s.style.top=Math.random()*100+'vh';s.style.animationDelay=Math.random()*3+'s';document.body.appendChild(s)}
+(function(){
+  const SK='#f2c59f',OL='#c98a63';
+  const st=(d,w)=>`<path d="${d}" fill="none" stroke="${OL}" stroke-width="${w+4}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${SK}" stroke-width="${w}" stroke-linecap="round"/>`;
+  let h='<rect x="-70" y="127" width="190" height="52" rx="16" fill="#5bbcf5"/><rect x="-64" y="132" width="170" height="9" rx="4.5" fill="#fff" opacity=".28"/><rect x="110" y="124" width="14" height="58" rx="6" fill="#3a9ad9"/><text x="40" y="160" text-anchor="middle" font-size="20" fill="#fff">★</text>';
+  h+='<rect x="280" y="127" width="190" height="52" rx="16" fill="#8e6fe0"/><rect x="286" y="132" width="170" height="9" rx="4.5" fill="#fff" opacity=".28"/><rect x="276" y="124" width="14" height="58" rx="6" fill="#6a4fc0"/><text x="360" y="160" text-anchor="middle" font-size="20" fill="#fff">♥</text>';
+  h+=`<path d="M124,134 Q130,124 150,124 L250,124 Q270,124 276,134 L276,172 Q270,182 250,182 L150,182 Q130,182 124,172 Z" fill="${SK}" stroke="${OL}" stroke-width="3.5" stroke-linejoin="round"/>`;
+  [[206,184],[224,187],[242,184],[260,178],[194,184],[176,187],[158,184],[140,178]].forEach(f=>h+=st(`M${f[0]},160 L${f[0]},${f[1]}`,14));
+  h+=st('M146,136 Q176,112 216,124',15)+'<ellipse cx="215" cy="123" rx="6" ry="4" fill="#ffe3ee"/>';
+  h+=st('M254,136 Q224,112 184,124',15)+'<ellipse cx="185" cy="123" rx="6" ry="4" fill="#d2b3ff"/>';
+  h+='<text x="200" y="100" text-anchor="middle" font-size="26">💜</text>';
+  clb.innerHTML=h;
+})();
+function center(){const r=art.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height*.5]}
+function heart(an,dx,dy,x,y,size){
+  const s=document.createElement('span');
+  s.className='fh';s.textContent=['💜','💗','💙','🌸'][Math.floor(Math.random()*4)];
+  s.style.left=x+'px';s.style.top=y+'px';s.style.fontSize=size+'px';
+  s.style.setProperty('--dx',dx+'px');s.style.setProperty('--dy',dy+'px');
+  s.style.animationName=an;document.body.appendChild(s);
+  setTimeout(()=>s.remove(),2200);
+}
+function render(t){
+  const s=t/1000,e=p;
+  if(done)clb.setAttribute('transform',`translate(200,153) scale(${1+.015*Math.sin(s*4)}) translate(-200,-153)`);
+  const tx=-68+148*e;
+  droop+=((hold||p===0||done?0:1)-droop)*.08;
+  const trem=hold&&!done?Math.sin(s*9)*.4*e:0;
+  const beat=1+(e>.3||done?.012*Math.sin(s*(done?6:3+3*e)):0);
+  const bob=ph=>Math.sin(s*1.2+ph)*2.5+droop*10;
+  const rot=Math.sin(s*1)*1+droop*8+trem;
+  L.setAttribute('transform',`translate(${tx},${168+bob(0)}) rotate(${rot}) scale(${beat})`);
+  R.setAttribute('transform',`translate(${400-tx},${168+bob(2)}) scale(-1,1) rotate(${rot}) scale(${beat})`);
+  glow.setAttribute('r',(8+95*e*e*e)*(1+.04*Math.sin(s*4)));
+  glow.setAttribute('opacity',e>0?.25+.75*e:0);
+  sp.setAttribute('opacity',e>.55?.6+.4*Math.sin(s*8):0);
+  dawn.style.opacity=e;
+  fill.style.width=(1-e)*100+'%';
+  if(done)return;
+  let m;
+  if(hold){m=p<.3?'Keep holding… I’m coming closer 🥺':p<.6?'Almost there, don’t let go!':p<.9?'So close I can feel it 💜':'Just a little more…'}
+  else if(p>0){m=rel<2?'Noo, don’t let go! 😭':rel<3?'Hey! Come back 😤':'Are you angry again? I’m sorry 🥺 Hold on!'}
+  else m='Hold the screen and I’ll come closer 🥺';
+  msg.textContent=m;
+}
+function finish(){
+  done=true;hold=false;p=1;
+  app.classList.add('done');art.classList.add('pop');art.style.transform='scale(1.12)';reach.style.opacity='0';
+  $('#flash').classList.add('on');
+  try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}
+  const[cx,cy]=center();
+  for(let k=0;k<22;k++){const a=Math.random()*6.28,d=90+Math.random()*130;heart('out',Math.cos(a)*d,Math.sin(a)*d,cx,cy,18+Math.random()*16)}
+  const E=['🪷','🌹','🌻','💜','💙','🌸'];
+  for(let k=0;k<45;k++){
+    const s=document.createElement('span');
+    s.className='fall';s.textContent=E[k%E.length];
+    s.style.left=Math.random()*100+'vw';
+    s.style.fontSize=(18+Math.random()*18)+'px';
+    s.style.animationDuration=(3+Math.random()*3)+'s';
+    s.style.animationDelay=(Math.random()*2.5)+'s';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),9000);
+  }
+}
+function tick(t){
+  const dt=Math.min((t-last)/1000,.1);last=t;
+  if(lvl!==1){requestAnimationFrame(tick);return}
+  if(!done){
+    p+=hold?dt/10:-dt*.12;
+    p=Math.max(0,Math.min(1,p));
+    if(p>=1)finish();
+  }
+  render(t);
+  acc+=dt*(done?2.5:hold&&p>.25?1+5*p:0);
+  if(acc>1){acc=0;const[cx,cy]=center();heart('rise',(Math.random()-.5)*80,0,cx+(Math.random()-.5)*40,cy-10,14+Math.random()*12)}
+  requestAnimationFrame(tick);
+}
+function down(){if(!done&&lvl===1)hold=true}
+function up(){if(hold&&!done&&p>0)rel++;hold=false}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;down()});
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,up));
+window.addEventListener('blur',up);
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='Enter')&&!e.repeat&&!e.target.closest('button')){e.preventDefault();down()}});
+document.addEventListener('keyup',e=>{if(e.code==='Space'||e.code==='Enter')up()});
+$('#again').addEventListener('click',()=>location.reload());
+requestAnimationFrame(tick);
+</script>
+<script>
+(function(){
+const Q=s=>document.querySelector(s),eyes=Q('#eyes'),C=[[115,120],[285,120]];
+let sv=`<defs><radialGradient id='ir'><stop offset='0' stop-color='#4b2f9e'/><stop offset='.65' stop-color='#7c4dff'/><stop offset='1' stop-color='#5bbcf5'/></radialGradient>`;
+C.forEach((c,k)=>sv+=`<clipPath id='c${k}'><ellipse cx='${c[0]}' cy='${c[1]}' rx='78' ry='66'/></clipPath>`);
+sv+=`</defs><g id='brw' fill='none' stroke='#3b2a6b' stroke-width='9' stroke-linecap='round'><path d='M42,42 Q112,2 182,36'/><path d='M218,36 Q288,2 358,42'/></g>`;
+C.forEach((c,k)=>{sv+=`<ellipse cx='${c[0]}' cy='${c[1]}' rx='78' ry='66' fill='#fff' stroke='#3b2a6b' stroke-width='5'/><g clip-path='url(#c${k})'><g class='ir'><circle r='40' fill='url(#ir)'/><circle class='pu' r='19' fill='#2d1f57'/><path class='hp' d='M0,14 C-26,-4 -18,-24 0,-10 C18,-24 26,-4 0,14 Z' fill='#ff4f8b' opacity='0'/><circle cx='-13' cy='-14' r='9' fill='#fff'/><circle cx='12' cy='12' r='4.5' fill='#fff'/></g><rect class='ld' x='${c[0]-80}' y='${c[1]-66}' width='160' height='0' fill='#f2c59f'/><line class='ls' x1='${c[0]-80}' x2='${c[0]+80}' y1='${c[1]-66}' y2='${c[1]-66}' stroke='#3b2a6b' stroke-width='5' stroke-linecap='round' opacity='0'/></g><ellipse class='bl' cx='${c[0]}' cy='214' rx='34' ry='12' fill='#ff8fb8' opacity='0'/><path class='tr' d='M0,-9 Q8,2 0,9 Q-8,2 0,-9Z' fill='#7fd0ff' opacity='0'/>`});
+eyes.innerHTML=sv;
+const A=c=>[...eyes.querySelectorAll(c)],IR=A('.ir'),PU=A('.pu'),HP=A('.hp'),LD=A('.ld'),LS=A('.ls'),TR=A('.tr'),BL=A('.bl'),brw=Q('#brw'),fill=Q('#fill2'),msg=Q('#msg2'),live=Q('#live2'),fin=Q('#final2');
+let q=0,h2=false,dn=false,att=0,bd=0,bt=2,tx=200,ty=260,last2=performance.now(),acc2=0,lastMsg='';
+const cur=[[0,0],[0,0]];
+function track(e){const r=eyes.getBoundingClientRect();tx=(e.clientX-r.left)*400/r.width;ty=(e.clientY-r.top)*240/r.height}
+function reset(){q=0;h2=false;dn=false;att=0;live.style.display='block';fin.style.display='none'}
+Q('#next').addEventListener('click',()=>{lvl=2;Q('#app').style.display='none';Q('#dawn').style.opacity=0;document.querySelectorAll('.fall,.fh').forEach(n=>n.remove());Q('#lvl2').classList.add('on');reset()});
+Q('#again2').addEventListener('click',reset);
+Q('#home').addEventListener('click',()=>location.reload());
+document.addEventListener('pointermove',e=>{if(lvl===2)track(e)});
+document.addEventListener('pointerdown',e=>{if(lvl!==2||dn||e.target.closest('button'))return;h2=true;track(e)});
+function rel2(){if(lvl!==2)return;if(h2&&!dn&&q>.03){att++;bd=.3;q=0}h2=false}
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,rel2));
+window.addEventListener('blur',rel2);
+document.addEventListener('keydown',e=>{if(lvl===2&&!dn&&e.code==='Space'&&!e.repeat&&!e.target.closest('button')){e.preventDefault();h2=true}});
+document.addEventListener('keyup',e=>{if(e.code==='Space')rel2()});
+function win(){
+  dn=true;h2=false;live.style.display='none';fin.style.display='block';
+  const f=Q('#flash');f.classList.remove('on');void f.offsetWidth;f.classList.add('on');
+  try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}
+  const r=eyes.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  for(let k=0;k<22;k++){const a=Math.random()*6.28,d=90+Math.random()*130;heart('out',Math.cos(a)*d,Math.sin(a)*d,cx,cy,18+Math.random()*16)}
+  const E=['🪷','🌹','🌻','💜','💙','🌸'];
+  for(let k=0;k<45;k++){const s=document.createElement('span');s.className='fall';s.textContent=E[k%E.length];s.style.left=Math.random()*100+'vw';s.style.fontSize=(18+Math.random()*18)+'px';s.style.animationDuration=(3+Math.random()*3)+'s';s.style.animationDelay=(Math.random()*2.5)+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),9000)}
+}
+function step(dt,s){
+  if(!dn&&h2){q=Math.min(1,q+dt/10);if(q>=1)win()}
+  if(!h2&&!dn){bt-=dt;if(bt<=0){bd=.3;bt=2+Math.random()*2.5}}
+  if(bd>0)bd-=dt;
+  const cl=bd>0?Math.sin(Math.PI*(1-bd/.3)):0,tw=h2&&!dn?7*q*(.5+.5*Math.sin(s*28)):0,H=cl*134+tw,hm=q>=.7||dn;
+  C.forEach((c,k)=>{
+    let vx=0,vy=0;
+    if(!h2&&!dn){const dx=tx-c[0],dy=ty-c[1],len=Math.hypot(dx,dy)||1,m=Math.min(26,len*.18);vx=dx/len*m;vy=dy/len*m}
+    const e=Math.min(1,dt*10);cur[k][0]+=(vx-cur[k][0])*e;cur[k][1]+=(vy-cur[k][1])*e;
+    IR[k].setAttribute('transform',`translate(${c[0]+cur[k][0]},${c[1]+cur[k][1]})`);
+    PU[k].setAttribute('r',19+4*q);PU[k].style.opacity=hm?0:1;
+    HP[k].style.opacity=hm?1:0;HP[k].setAttribute('transform',`scale(${1.1+.12*Math.sin(s*9)})`);
+    LD[k].setAttribute('height',H);LS[k].setAttribute('y1',c[1]-66+H);LS[k].setAttribute('y2',c[1]-66+H);LS[k].style.opacity=H>1?1:0;
+    TR[k].style.opacity=dn?0:(q>.45?Math.min(1,(q-.45)*3):0);
+    TR[k].setAttribute('transform',`translate(${c[0]+(k?18:-18)},${192+((s*30+k*12)%22)})`);
+    BL[k].style.opacity=.8*q;
+  });
+  brw.setAttribute('transform',`translate(0,${-10*q})`);
+  fill.style.width=q*100+'%';
+  let m;
+  if(h2){m=q<.25?'Don’t blink first! 👀':q<.5?'I’m not blinking… 😤':q<.7?'My eyes are watering 😭 but I won’t blink':q<.9?'Okay… your eyes are winning 😳':'Wait, I can’t look away from you 🥺💜'}
+  else m=att===0?'Press and hold anywhere, then look into my eyes 👀':att===1?'You blinked! 😜 I win… try again':att===2?'Blinked again! 😂 Try once more':'Are you angry again? Look at me! 🥺';
+  if(m!==lastMsg){msg.textContent=m;lastMsg=m}
+  acc2+=dt*(dn?2.5:q>.6?1+4*q:0);
+  if(acc2>1){acc2=0;const r=eyes.getBoundingClientRect();heart('rise',(Math.random()-.5)*80,0,r.left+r.width*(.3+Math.random()*.4),r.top+r.height*.6,14+Math.random()*12)}
+}
+function loop(t){const dt=Math.min((t-last2)/1000,.1);last2=t;if(lvl===2)step(dt,t/1000);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
